@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "ligne-core",
+    "ligne-ui",
+]
