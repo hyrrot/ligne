@@ -1,0 +1,19 @@
+[package]
+name = "ligne-ui"
+version = "0.1.1"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = { version = "0.11.1", features = ["dynamic_linking", "bevy_core_pipeline"] }
+bevy_ecs_tilemap = "0.11.0"
+
+[patch.crates-io]
+# Tentative fix for the following issue. Remove once the fix is published to crates.io.
+# https://github.com/StarArawn/bevy_ecs_tilemap/pull/449
+bevy_ecs_tilemap = { git = "https://github.com/StarArawn/bevy_ecs_tilemap.git", rev = "cf2c7dc5e548da2a1187c2f08e470234a932ae08" }
+
+[features]
+default = ["render"]
+render = []
