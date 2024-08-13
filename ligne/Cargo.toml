@@ -1,5 +1,5 @@
 [package]
-name = "ligne-ui"
+name = "ligne"
 version = "0.1.1"
 edition = "2021"
 
