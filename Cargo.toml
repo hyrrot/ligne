@@ -1,6 +1,5 @@
 [workspace]
 
 members = [
-    "ligne-core",
-    "ligne-ui",
+    "ligne",
 ]
