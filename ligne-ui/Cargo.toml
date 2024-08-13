@@ -9,6 +9,14 @@ edition = "2021"
 bevy = { version = "0.11.1", features = ["dynamic_linking", "bevy_core_pipeline"] }
 bevy_ecs_tilemap = "0.11.0"
 
+[dependencies.uuid]
+version = "1.7.0"
+features = [
+    "v4",                # Lets you generate random UUIDs
+    "fast-rng",          # Use a faster (but still sufficiently random) RNG
+    "macro-diagnostics", # Enable better diagnostics for compile-time UUIDs
+]
+
 [patch.crates-io]
 # Tentative fix for the following issue. Remove once the fix is published to crates.io.
 # https://github.com/StarArawn/bevy_ecs_tilemap/pull/449

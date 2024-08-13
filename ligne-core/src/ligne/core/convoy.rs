@@ -1,22 +1,22 @@
-use crate::ligne::core::object::Object;
-use crate::ligne::core::types::Coord3D;
+// use crate::ligne::core::object::Object;
+// use crate::ligne::core::types::Coord3D;
 
-use super::types::Offset3D;
+// use super::types::Offset3D;
 
-pub trait Convoy {
-    fn get_object(&self, index: u8) -> &dyn Object;
-    fn set_object(&mut self, index: u8, object: &dyn Object);
-    fn get_position(&self, index: u8) -> Coord3D;
-    fn set_position(&mut self, index: u8, position: Coord3D);
-    fn get_offset(&self, index: u8) -> Offset3D;
-    fn set_offset(&mut self, index: u8, offset: Offset3D);
-    fn get_object_relative_position(&self, index: u8) -> Coord3D;
-    fn set_object_relative_position(&mut self, index: u8, position: Coord3D);
+// pub trait Convoy {
+//     fn get_object(&self, index: u8) -> &dyn Object;
+//     fn set_object(&mut self, index: u8, object: &dyn Object);
+//     fn get_position(&self, index: u8) -> Coord3D;
+//     fn set_position(&mut self, index: u8, position: Coord3D);
+//     fn get_offset(&self, index: u8) -> Offset3D;
+//     fn set_offset(&mut self, index: u8, offset: Offset3D);
+//     fn get_object_relative_position(&self, index: u8) -> Coord3D;
+//     fn set_object_relative_position(&mut self, index: u8, position: Coord3D);
 
-    fn draw(&self);
-}
+//     fn draw(&self);
+// }
 
-pub struct RailwayConvoy {}
+// pub struct RailwayConvoy {}
 
 // impl Convoy for RailwayConvoy {
 //     fn draw(&self) {

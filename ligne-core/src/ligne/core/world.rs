@@ -59,7 +59,7 @@ impl World for WorldImpl {
     }
 
     fn new(width: u32, height: u32, depth: u32) -> Box<Self> {
-        let mut voxels = Vec::<Box<dyn Voxel>>::with_capacity((width * height * depth) as usize);
+        let mut voxels: Vec<Box<dyn Voxel>> = Vec::<Box<dyn Voxel>>::with_capacity((width * height * depth) as usize);
         for _ in 0..(width * height * depth) {
             // TODO: apply abstract factory pattern
             voxels.push(Box::new(EmptyVoxel {}));
