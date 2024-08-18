@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 bevy = { version = "0.11.1", features = ["dynamic_linking", "bevy_core_pipeline"] }
 bevy_ecs_tilemap = "0.11.0"
+num = "0.4.3"
 
 [dependencies.uuid]
 version = "1.7.0"
