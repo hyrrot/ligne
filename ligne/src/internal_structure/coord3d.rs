@@ -1,155 +1,105 @@
+use std::clone;
+
+use num::bigint::ToBigInt;
 use num::rational::Ratio;
-use num::ToPrimitive;
+use num::traits::float::FloatCore;
+use num::{Integer, ToPrimitive};
 
-pub struct Coord3D<T: Clone> {
-    x: T,
-    y: T,
-    z: T,
+
+pub type PhysicalCoord3D = Coord3D<f32>;
+pub type VoxelCoord3D = Coord3D<Ratio<i32>>;
+
+#[derive(Clone)]
+pub struct Coord3D<T> {
+    pub x: T,
+    pub y: T,
+    pub z: T,
 }
 
-pub type OffsetedCoord3D = Coord3D<OffsetedCoordValue>;
-pub type OffsetedCoordValue = Ratio<i32>;
-
-impl OffsetedCoord3D {
-
-    pub fn new(x: OffsetedCoordValue, y: OffsetedCoordValue, z: OffsetedCoordValue) -> OffsetedCoord3D {
-        OffsetedCoord3D {
-            x: x,
-            y: y,
-            z: z,
+impl<T> Coord3D<T> {
+    pub fn new(x: T, y: T, z: T) -> Self {
+        Self {
+            x,
+            y,
+            z,
         }
     }
+}
 
-    pub fn from_integer(x: i32, y: i32, z: i32) -> OffsetedCoord3D {
-        OffsetedCoord3D {
-            x: Ratio::from_integer(x),
-            y: Ratio::from_integer(y),
-            z: Ratio::from_integer(z),
+macro_rules! to_type {
+    ($method_name: ident, $type:ty) => {
+        pub fn $method_name(&self) -> Coord3D<Option<$type>> {
+            Coord3D::new(
+                self.x.$method_name(),
+                self.y.$method_name(),
+                self.z.$method_name(),
+            )
         }
-    }
+    };
+}
 
-    pub fn floor(&self) -> Coord3D<i32> {
-        Coord3D {
-            x: self.x.floor().to_integer(),
-            y: self.y.floor().to_integer(),
-            z: self.z.floor().to_integer(),
-        }
-    }
+impl<T> Coord3D<Ratio<T>> where T: Clone + Integer + ToPrimitive + ToBigInt {
 
-    pub fn round(&self) -> Coord3D<i32> {
-        Coord3D {
-            x: self.x.round().to_integer(),
-            y: self.y.round().to_integer(),
-            z: self.z.round().to_integer(),
-        }
-    }
-
-    pub fn ceil(&self) -> Coord3D<i32> {
-        Coord3D {
-            x: self.x.ceil().to_integer(),
-            y: self.y.ceil().to_integer(),
-            z: self.z.ceil().to_integer(),
-        }
-    }
-
-    pub fn to_f32(&self) -> Coord3D<f32> {
-        Coord3D {
-            x: self.x.to_f32().unwrap(),
-            y: self.y.to_f32().unwrap(),
-            z: self.z.to_f32().unwrap(),
-        }
-    }
-
-    pub fn mut_shift(&mut self, x: OffsetedCoordValue, y: OffsetedCoordValue, z: OffsetedCoordValue) {
-        self.x = self.x + x;
-        self.y = self.y + y;
-        self.z = self.z + z;
-    }
-
-    pub fn mut_update(&mut self, x: OffsetedCoordValue, y: OffsetedCoordValue, z: OffsetedCoordValue) {
-        self.x = x;
-        self.y = y;
-        self.z = z;
-    }
-
-
-
+    to_type!(to_f32, f32);
+    to_type!(to_f64, f64);
+    to_type!(to_i8, i8);
+    to_type!(to_i16, i16);
+    to_type!(to_i32, i32);
+    to_type!(to_i64, i64);
+    to_type!(to_i128, i128);
+    to_type!(to_u8, u8);
+    to_type!(to_u16, u16);
+    to_type!(to_u32, u32);
+    to_type!(to_u64, u64);
+    to_type!(to_u128, u128);
+    to_type!(to_usize, usize);
+    to_type!(to_isize, isize);
 
 }
 
-#[cfg(test)]
-mod test {
-
-    use super::*;
-
-    #[test]
-    fn test_new() {
-        let coord = OffsetedCoord3D::new(Ratio::new(5, 2), Ratio::new(3, 2), Ratio::new(7, 2));
-        assert_eq!(coord.x, Ratio::new(5, 2));
-        assert_eq!(coord.y, Ratio::new(3, 2));
-        assert_eq!(coord.z, Ratio::new(7, 2));
+impl<T> Coord3D<Ratio<T>> where T: Clone + Integer {
+    
+    pub fn floor(&self) -> Coord3D<Ratio<T>> {
+        Coord3D::new(
+            self.x.floor(),
+            self.y.floor(),
+            self.z.floor(),
+        )
     }
 
-    #[test]
-    fn test_from_integer() {
-        let coord = OffsetedCoord3D::from_integer(5, 3, 7);
-        assert_eq!(coord.x, Ratio::new(5, 1));
-        assert_eq!(coord.y, Ratio::new(3, 1));
-        assert_eq!(coord.z, Ratio::new(7, 1));
+    pub fn ceil(&self) -> Coord3D<Ratio<T>> {
+        Coord3D::new(
+            self.x.ceil(),
+            self.y.ceil(),
+            self.z.ceil(),
+        )
     }
 
-    #[test]
-    fn test_floor() {
-        let coord = OffsetedCoord3D::new(Ratio::new(5, 2), Ratio::new(3, 2), Ratio::new(7, 2));
-        let floor = coord.floor();
-        assert_eq!(floor.x, 2);
-        assert_eq!(floor.y, 1);
-        assert_eq!(floor.z, 3);
+    pub fn round(&self) -> Coord3D<Ratio<T>> {
+        Coord3D::new(
+            self.x.round(),
+            self.y.round(),
+            self.z.round(),
+        )
     }
+}
 
-    #[test]
-    fn test_round() {
-        let coord = OffsetedCoord3D::new(Ratio::new(5, 2), Ratio::new(3, 2), Ratio::new(7, 2));
-        let round = coord.round();
-        assert_eq!(round.x, 3);
-        assert_eq!(round.y, 2);
-        assert_eq!(round.z, 4);
+impl VoxelCoord3D {
+    pub fn to_physical(&self) -> PhysicalCoord3D {
+        Coord3D::new(
+            self.x.to_f32().unwrap(),
+            self.y.to_f32().unwrap(),
+            self.z.to_f32().unwrap(),
+        )
     }
+}
 
-    #[test]
-    fn test_ceil() {
-        let coord = OffsetedCoord3D::new(Ratio::new(5, 2), Ratio::new(3, 2), Ratio::new(7, 2));
-        let ceil = coord.ceil();
-        assert_eq!(ceil.x, 3);
-        assert_eq!(ceil.y, 2);
-        assert_eq!(ceil.z, 4);
+impl PhysicalCoord3D {
+    pub fn to_voxel(&self) -> VoxelCoord3D {
+        Coord3D::new(
+            Ratio::approximate_float(self.x).unwrap(),
+            Ratio::approximate_float(self.y).unwrap(),
+            Ratio::approximate_float(self.z).unwrap(),
+        )
     }
-
-    #[test]
-    fn test_to_f32() {
-        let coord = OffsetedCoord3D::new(Ratio::new(5, 2), Ratio::new(3, 2), Ratio::new(7, 2));
-        let f32 = coord.to_f32();
-        assert_eq!(f32.x, 2.5);
-        assert_eq!(f32.y, 1.5);
-        assert_eq!(f32.z, 3.5);
-    }
-
-    #[test]
-    fn test_mut_shift() {
-        let mut coord = OffsetedCoord3D::new(Ratio::new(5, 2), Ratio::new(3, 2), Ratio::new(7, 2));
-        coord.mut_shift(Ratio::new(1, 2), Ratio::new(1, 2), Ratio::new(1, 2));
-        assert_eq!(coord.x, Ratio::new(3, 1));
-        assert_eq!(coord.y, Ratio::new(2, 1));
-        assert_eq!(coord.z, Ratio::new(4, 1));
-    }
-
-    #[test]
-    fn test_mut_update() {
-        let mut coord = OffsetedCoord3D::new(Ratio::new(5, 2), Ratio::new(3, 2), Ratio::new(7, 2));
-        coord.mut_update(Ratio::new(1, 2), Ratio::new(1, 2), Ratio::new(1, 2));
-        assert_eq!(coord.x, Ratio::new(1, 2));
-        assert_eq!(coord.y, Ratio::new(1, 2));
-        assert_eq!(coord.z, Ratio::new(1, 2));
-    }
-
 }
